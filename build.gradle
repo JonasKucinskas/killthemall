@@ -60,6 +60,8 @@ project(":client") {
         implementation group: 'log4j', name: 'log4j', version: '1.2.17' 
         testImplementation 'junit:junit:4.13.2'  // Updated to testImplementation
         compile 'junit:junit:4.13.2'
+        testImplementation 'org.mockito:mockito-core:2.28.2'  // Add Mockito for testing
+        compile 'org.mockito:mockito-core:2.28.2'
     }
 
     test {
@@ -81,6 +83,7 @@ project(":server") {
         implementation group: 'log4j', name: 'log4j', version: '1.2.17'
         testImplementation 'junit:junit:4.13.2'  // Updated to testImplementation
         compile 'junit:junit:4.13.2'
-
+        testImplementation 'org.mockito:mockito-core:2.28.2'  // Add Mockito for testing
+        compile 'org.mockito:mockito-core:2.28.2'
     }
 }
