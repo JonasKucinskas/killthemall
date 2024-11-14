@@ -37,13 +37,13 @@ import com.javakaian.shooter.utils.OMessageParser;
  */
 public class PlayState extends State implements OMessageListener {
 
-	private Player player;
-	private List<Player> players;
-	private List<Enemy> enemies;
-	private List<Bullet> bullets;
-	private AimLine aimLine;
+	public Player player;
+	public List<Player> players;
+	public List<Enemy> enemies;
+	public List<Bullet> bullets;
+	public AimLine aimLine;
 
-	private OClient myclient;
+	public OClient myclient;
 
 	private BitmapFont healthFont;
 
@@ -55,7 +55,7 @@ public class PlayState extends State implements OMessageListener {
 		healthFont = GameUtils.generateBitmapFont(20, Color.WHITE);
 	}
 
-	private void init() {
+	public void init() {
 
 		myclient = new OClient(sc.getInetAddress(), this);
 		myclient.connect();
@@ -71,7 +71,6 @@ public class PlayState extends State implements OMessageListener {
 		m.setX(new SecureRandom().nextInt(GameConstants.SCREEN_WIDTH));
 		m.setY(new SecureRandom().nextInt(GameConstants.SCREEN_HEIGHT));
 		myclient.sendTCP(m);
-
 	}
 
 	@Override
@@ -147,7 +146,7 @@ public class PlayState extends State implements OMessageListener {
 	 * Whenever player press a button, this creates necessary position message and
 	 * sends it to the server.
 	 */
-	private void processInputs() {
+	public void processInputs() {
 
 		PositionMessage p = new PositionMessage();
 		p.setId(player.getId());

@@ -26,10 +26,10 @@ import com.javakaian.shooter.utils.GameUtils;
  */
 public abstract class State {
 
-	protected OrthographicCamera camera;
+	public OrthographicCamera camera;
 	protected InputProcessor ip;
-	protected ShapeRenderer sr;
-	protected SpriteBatch sb;
+	public ShapeRenderer sr;
+	public SpriteBatch sb;
 	protected BitmapFont bitmapFont;
 	protected GlyphLayout glyphLayout;
 

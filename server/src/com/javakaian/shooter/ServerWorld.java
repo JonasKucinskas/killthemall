@@ -22,19 +22,19 @@ import com.javakaian.util.MessageCreator;
 
 public class ServerWorld implements OMessageListener {
 
-	private List<Player> players;
-	private List<Enemy> enemies;
-	private List<Bullet> bullets;
+	public List<Player> players;
+	public List<Enemy> enemies;
+	public List<Bullet> bullets;
 
-	private OServer oServer;
+	public OServer oServer;
 
-	private float deltaTime = 0;
+	public float deltaTime = 0;
 
-	private float enemyTime = 0f;
+	public float enemyTime = 0f;
 
-	private LoginController loginController;
+	public LoginController loginController;
 
-	private Logger logger = Logger.getLogger(ServerWorld.class);
+	public Logger logger = Logger.getLogger(ServerWorld.class);
 
 	public ServerWorld() {
 
@@ -77,17 +77,21 @@ public class ServerWorld implements OMessageListener {
 	 * Spawns an enemy to the random location. In 0.4 second if enemy list size is
 	 * lessthan 15.
 	 */
-	private void spawnRandomEnemy() {
+	public void spawnRandomEnemy() {
+		
+		System.err.println("size before" + enemies.size());
 		if (enemyTime >= 0.4 && enemies.size() <= 15) {
 			enemyTime = 0;
 			if (enemies.size() % 5 == 0)
 				logger.debug("Number of enemies : " + enemies.size());
 			Enemy e = new Enemy(new SecureRandom().nextInt(1000), new SecureRandom().nextInt(1000), 10);
 			enemies.add(e);
+			System.err.println("size " + enemies.size());
+
 		}
 	}
 
-	private void checkCollision() {
+	public void checkCollision() {
 
 		for (Bullet b : bullets) {
 

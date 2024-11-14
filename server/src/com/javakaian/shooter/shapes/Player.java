@@ -48,6 +48,11 @@ public class Player {
 		return boundRect;
 	}
 
+	public void setBoundRect(Rectangle r)
+	{
+		this.boundRect = r;
+	}
+
 	public boolean isAlive() {
 		return alive;
 	}

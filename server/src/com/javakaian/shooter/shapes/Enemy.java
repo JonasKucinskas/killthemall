@@ -16,6 +16,11 @@ public class Enemy {
 
 	}
 
+	public void setBoundRect(Rectangle r)
+	{
+		this.boundRect = r;
+	}
+
 	public void update(float deltaTime) {
 
 		this.boundRect.x = x;

@@ -28,6 +28,11 @@ public class Bullet {
 		this.boundRect = new Rectangle(x, y, size, size);
 	}
 
+	public void setBoundRect(Rectangle r)
+	{
+		this.boundRect = r;
+	}
+
 	public void update(float deltaTime) {
 
 		float speed = deltaTime * 800;

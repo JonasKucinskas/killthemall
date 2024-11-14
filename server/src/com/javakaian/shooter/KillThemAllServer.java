@@ -7,12 +7,12 @@ import com.badlogic.gdx.Gdx;
 
 public class KillThemAllServer extends ApplicationAdapter {
 
-	private float time;
-	private int updateCounter;
+	public float time;
+	public int updateCounter;
 
-	private ServerWorld serverWorld;
+	public ServerWorld serverWorld;
 
-	private Logger logger = Logger.getLogger(KillThemAllServer.class);
+	public Logger logger = Logger.getLogger(KillThemAllServer.class);
 
 	public KillThemAllServer() {
 
