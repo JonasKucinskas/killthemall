@@ -1,5 +1,7 @@
 ## Java
 
+.vscode/
+
 *.class
 *.war
 *.ear

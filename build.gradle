@@ -1,6 +1,4 @@
 buildscript {
-    
-
     repositories {
         mavenLocal()
         mavenCentral()
@@ -9,11 +7,8 @@ buildscript {
         google()
     }
     dependencies {
-        
-
     }
 }
-
 
 plugins {
   id "org.sonarqube" version "3.3"
@@ -26,7 +21,6 @@ sonarqube {
     property "sonar.host.url", "https://sonarcloud.io"
   }
 }
-
 
 allprojects {
     apply plugin: "eclipse"
@@ -54,9 +48,8 @@ allprojects {
 project(":client") {
     apply plugin: "java-library"
 
-
     dependencies {
-    	api "com.badlogicgames.gdx:gdx-backend-lwjgl:$gdxVersion"
+        api "com.badlogicgames.gdx:gdx-backend-lwjgl:$gdxVersion"
         api "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
         api "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-desktop"
         api "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-desktop"
@@ -65,21 +58,29 @@ project(":client") {
         api "com.badlogicgames.gdx:gdx-freetype:$gdxVersion"
         compile "com.esotericsoftware:kryonet:2.22.0-RC1"
         implementation group: 'log4j', name: 'log4j', version: '1.2.17' 
-        
+        testImplementation 'junit:junit:4.13.2'  // Updated to testImplementation
+        compile 'junit:junit:4.13.2'
+    }
+
+    test {
+        useJUnit()  // Ensure JUnit is used for tests
     }
 }
+
 project(":server") {
     apply plugin: "java-library"
 
-
     dependencies {
-     	api "com.badlogicgames.gdx:gdx-backend-lwjgl:$gdxVersion"
-     	api "com.badlogicgames.gdx:gdx-backend-headless:$gdxVersion"
+        api "com.badlogicgames.gdx:gdx-backend-lwjgl:$gdxVersion"
+        api "com.badlogicgames.gdx:gdx-backend-headless:$gdxVersion"
         api "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
         api "com.badlogicgames.gdx:gdx:$gdxVersion"
         api "com.badlogicgames.gdx:gdx-box2d:$gdxVersion"
         api "com.badlogicgames.gdx:gdx-freetype:$gdxVersion"
         compile "com.esotericsoftware:kryonet:2.22.0-RC1"
-		implementation group: 'log4j', name: 'log4j', version: '1.2.17'        
+        implementation group: 'log4j', name: 'log4j', version: '1.2.17'
+        testImplementation 'junit:junit:4.13.2'  // Updated to testImplementation
+        compile 'junit:junit:4.13.2'
+
     }
 }
