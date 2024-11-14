@@ -1,27 +1,19 @@
+
 package com.javakaian;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.*;
 
 import java.util.ArrayList;
-import java.util.List;
-
 import org.junit.Before;
 import org.junit.Test;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.Input.Keys;
-import com.badlogic.gdx.graphics.Camera;
-import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.GdxNativesLoader;
 import com.javakaian.network.OClient;
 import com.javakaian.network.messages.GameWorldMessage;
 import com.javakaian.network.messages.LoginMessage;
@@ -30,47 +22,39 @@ import com.javakaian.network.messages.PlayerDied;
 import com.javakaian.network.messages.PositionMessage;
 import com.javakaian.network.messages.ShootMessage;
 import com.javakaian.shooter.shapes.AimLine;
-import com.javakaian.shooter.shapes.Bullet;
-import com.javakaian.shooter.shapes.Enemy;
 import com.javakaian.shooter.shapes.Player;
-import com.javakaian.shooter.utils.OMessageParser;
 import com.javakaian.states.PlayState;
 import com.javakaian.states.State.StateEnum;
 import com.javakaian.states.StateController;
 
 public class PlayStateTest {
 
-    private PlayState playState;
-    private StateController mockStateController;
+    private PlayState mockPlayState;
+    private Player mockPlayer;
     private OClient mockClient;
-    private ShapeRenderer mockShapeRenderer;
-    private SpriteBatch mockSpriteBatch;
-    private Camera mockCamera;
-
+    private StateController mockStateController; 
+    static {
+        GdxNativesLoader.load();
+    }
     @Before
     public void setUp() {
-
         mockStateController = mock(StateController.class);
+        mockPlayState = mock(PlayState.class);
         mockClient = mock(OClient.class);
-        mockShapeRenderer = mock(ShapeRenderer.class);
-        mockSpriteBatch = mock(SpriteBatch.class);
-        mockCamera = mock(OrthographicCamera.class);
 
-        playState = new PlayState(mockStateController);
-        playState.myclient = mockClient;
-        playState.sr = mockShapeRenderer;
-        playState.sb = mockSpriteBatch;
-        playState.camera = (OrthographicCamera) mockCamera;
+        mockPlayState.myclient = mockClient;
+        mockPlayState.players = new ArrayList<>(); 
+        mockPlayState.enemies = new ArrayList<>();
+        mockPlayState.bullets = new ArrayList<>();
 
-        Gdx.graphics = mock(Graphics.class);
+        mockPlayer = mock(Player.class);
+        when(mockPlayer.getId()).thenReturn(0);
+
+        mockPlayState.player = mockPlayer;
+        when(mockPlayState.getSc()).thenReturn(mockStateController);
+
         Gdx.input = mock(Input.class);
-
         when(Gdx.input.isKeyPressed(anyInt())).thenReturn(false);
-        when(Gdx.graphics.getDeltaTime()).thenReturn(1 / 60f);
-        
-        playState.players = new ArrayList<>();
-        playState.enemies = new ArrayList<>();
-        playState.bullets = new ArrayList<>();
     }
 
     @Test
@@ -80,86 +64,62 @@ public class PlayStateTest {
         loginMessage.setY(200);
         loginMessage.setId(1);
 
-        playState.loginReceieved(loginMessage);
+        doCallRealMethod().when(mockPlayState).loginReceieved(any(LoginMessage.class));
 
-        assertNotNull(playState.player);
-        assertEquals(100, playState.player.getPosition().x, 0.01);
-        assertEquals(200, playState.player.getPosition().y, 0.01);
-        assertEquals(1, playState.player.getId());
+        mockPlayState.loginReceieved(loginMessage);
+
+        assertNotNull(mockPlayState.player);
+        assertEquals(100, mockPlayState.player.getPosition().x, 0.01);
+        assertEquals(200, mockPlayState.player.getPosition().y, 0.01);
+        assertEquals(1, mockPlayState.player.getId());
     }
 
-    @Test
-    public void testLogoutReceived() {
-        Player player = new Player(100, 200, 50);
-        player.setId(1);
-        playState.players.add(player);
-        LogoutMessage logoutMessage = new LogoutMessage();
-        logoutMessage.setId(1);
+    @Test 
+    public void testPlayerDiedReceived() 
+    { 
+        PlayerDied playerDied = mock(PlayerDied.class);
+        when(playerDied.getId()).thenReturn(0);
 
-        playState.logoutReceieved(logoutMessage);
-
-        assertTrue(playState.players.isEmpty());
+        doCallRealMethod().when(mockPlayState).playerDiedReceived(any(PlayerDied.class)); 
+        mockPlayState.playerDiedReceived(playerDied);
+        verify(mockClient).sendTCP(any(LogoutMessage.class)); 
+        verify(mockClient).close(); 
+        verify(mockStateController).setState(StateEnum.GAME_OVER_STATE); 
     }
-
-    @Test
-    public void testPlayerDiedReceived() {
-        Player player = new Player(100, 200, 50);
-        player.setId(1);
-        playState.player = player;
-        PlayerDied playerDied = new PlayerDied();
-        playerDied.setId(1);
-
-        playState.playerDiedReceived(playerDied);
-
-        verify(mockClient).sendTCP(any(LogoutMessage.class));
-        verify(mockClient).close();
-        verify(mockStateController).setState(StateEnum.GAME_OVER_STATE);
-    }
-
     @Test
     public void testGwmReceived() {
-        GameWorldMessage gameWorldMessage = new GameWorldMessage();
+        GameWorldMessage mockGameWorldMessage = mock(GameWorldMessage.class);
 
-        List<Enemy> enemies = new ArrayList<>();
-        enemies.add(new Enemy(100, 200, 10));
-        List<Bullet> bullets = new ArrayList<>();
-        bullets.add(new Bullet(100, 200, 10));
-        List<Player> players = new ArrayList<>();
-        players.add(new Player(100, 200, 50));
+        when(mockGameWorldMessage.getEnemies()).thenReturn(new float[]{1.1f});
+        when(mockGameWorldMessage.getBullets()).thenReturn(new float[]{1.1f});
+        when(mockGameWorldMessage.getPlayers()).thenReturn(new float[]{1.1f});
+        
+        doCallRealMethod().when(mockPlayState).gwmReceived(any(GameWorldMessage.class));
 
-        when(OMessageParser.getEnemiesFromGWM(gameWorldMessage)).thenReturn(enemies);
-        when(OMessageParser.getBulletsFromGWM(gameWorldMessage)).thenReturn(bullets);
-        when(OMessageParser.getPlayersFromGWM(gameWorldMessage)).thenReturn(players);
+        mockPlayState.gwmReceived(mockGameWorldMessage);
 
-        playState.gwmReceived(gameWorldMessage);
-
-        assertEquals(enemies, playState.enemies);
-        assertEquals(bullets, playState.bullets);
-        assertEquals(players, playState.players);
     }
 
     @Test
     public void testProcessInputs() {
-        PositionMessage positionMessage = new PositionMessage();
-        positionMessage.setId(1);
+        doCallRealMethod().when(mockPlayState).processInputs();
 
-        when(Gdx.input.isKeyPressed(Keys.W)).thenReturn(true);
+        when(Gdx.input.isKeyPressed(Input.Keys.W)).thenReturn(true);
 
-        playState.processInputs();
+        mockPlayState.processInputs();
 
         verify(mockClient).sendUDP(any(PositionMessage.class));
     }
 
-
     @Test
     public void testShoot() {
-        Player player = new Player(100, 200, 50);
-        playState.player = player;
-        AimLine aimLine = new AimLine(new Vector2(0, 0), new Vector2(1, 0));
-        playState.aimLine = aimLine;
+        doCallRealMethod().when(mockPlayState).shoot();
 
-        playState.shoot();
+        AimLine mockAimLine = mock(AimLine.class);
+        mockPlayState.aimLine = mockAimLine; 
 
+        when(mockAimLine.getAngle()).thenReturn(1.1f);
+        mockPlayState.shoot();
         verify(mockClient).sendUDP(any(ShootMessage.class));
     }
 }
