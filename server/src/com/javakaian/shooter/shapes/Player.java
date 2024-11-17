@@ -60,7 +60,7 @@ public class Player {
 	public int getHealth() {
 		return this.health;
 	}
-
+	
 	public void increaseHealth() {
 		if (this.health == 100)
 			return;

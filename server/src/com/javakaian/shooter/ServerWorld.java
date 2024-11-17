@@ -48,7 +48,7 @@ public class ServerWorld implements OMessageListener {
 	}
 
 	public void update(float deltaTime) {
-
+		
 		this.deltaTime = deltaTime;
 		this.enemyTime += deltaTime;
 
@@ -78,16 +78,13 @@ public class ServerWorld implements OMessageListener {
 	 * lessthan 15.
 	 */
 	public void spawnRandomEnemy() {
-		
-		System.err.println("size before" + enemies.size());
+
 		if (enemyTime >= 0.4 && enemies.size() <= 15) {
 			enemyTime = 0;
 			if (enemies.size() % 5 == 0)
 				logger.debug("Number of enemies : " + enemies.size());
 			Enemy e = new Enemy(new SecureRandom().nextInt(1000), new SecureRandom().nextInt(1000), 10);
 			enemies.add(e);
-			System.err.println("size " + enemies.size());
-
 		}
 	}
 

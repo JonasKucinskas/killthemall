@@ -11,15 +11,16 @@ buildscript {
 }
 
 plugins {
-  id "org.sonarqube" version "3.3"
+    id "org.sonarqube" version "3.3"
+    id 'jacoco' 
 }
 
 sonarqube {
-  properties {
-    property "sonar.projectKey", "ogzkrt_killthemall"
-    property "sonar.organization", "ogzkrt"
-    property "sonar.host.url", "https://sonarcloud.io"
-  }
+    properties {
+        property "sonar.projectKey", "ogzkrt_killthemall"
+        property "sonar.organization", "ogzkrt"
+        property "sonar.host.url", "https://sonarcloud.io"
+    }
 }
 
 allprojects {
@@ -47,6 +48,7 @@ allprojects {
 
 project(":client") {
     apply plugin: "java-library"
+    apply plugin: "jacoco" 
 
     dependencies {
         api "com.badlogicgames.gdx:gdx-backend-lwjgl:$gdxVersion"
@@ -65,12 +67,29 @@ project(":client") {
     }
 
     test {
-        useJUnit() 
+        useJUnit()
+        finalizedBy 'jacocoTestReport'
+    }
+
+    jacocoTestReport {
+        dependsOn test
+
+        executionData fileTree(dir: "$buildDir", include: "**/jacoco/test.exec")
+
+        reports {
+            xml.enabled true
+            html.enabled true
+            xml.destination file("$buildDir/reports/jacoco/testReport.xml")
+            html.destination file("$buildDir/reports/jacoco/testReport")
+        }
+
+        sourceSets sourceSets.main
     }
 }
 
 project(":server") {
     apply plugin: "java-library"
+    apply plugin: "jacoco"
 
     dependencies {
         api "com.badlogicgames.gdx:gdx-backend-lwjgl:$gdxVersion"
@@ -85,6 +104,26 @@ project(":server") {
         compile 'junit:junit:4.13.2'
         testImplementation 'org.mockito:mockito-core:2.28.2'  
         compile 'org.mockito:mockito-core:2.28.2'
+    }
+
+    test {
+        useJUnit()
+        finalizedBy 'jacocoTestReport'
+    }
+
+    jacocoTestReport {
+        dependsOn test
+
+        executionData fileTree(dir: "$buildDir", include: "**/jacoco/test.exec")
+
+        reports {
+            xml.enabled true
+            html.enabled true
+            xml.destination file("$buildDir/reports/jacoco/testReport.xml")
+            html.destination file("$buildDir/reports/jacoco/testReport")
+        }
+
+        sourceSets sourceSets.main
     }
 }
 

@@ -57,4 +57,9 @@ public class KillThemAllServerTest {
         assertEquals(0, killThemAllServer.time, 0.001);
         assertEquals(0, killThemAllServer.updateCounter);
     }
+
+    @Test
+    public void disposeTest() {
+        killThemAllServer.dispose();
+    }
 }
