@@ -49,6 +49,7 @@ allprojects {
 project(":client") {
     apply plugin: "java-library"
     apply plugin: "jacoco" 
+    apply plugin: "findbugs"
 
     dependencies {
         api "com.badlogicgames.gdx:gdx-backend-lwjgl:$gdxVersion"
@@ -85,11 +86,26 @@ project(":client") {
 
         sourceSets sourceSets.main
     }
+
+    findbugs {
+        ignoreFailures = true
+        toolVersion = "3.0.1"
+        sourceSets=[sourceSets.main]
+        reportsDir = file("$project.buildDir/reports/findbugs")
+        effort = "max"
+    }
+    tasks.withType(FindBugs) {
+        reports {
+            xml.enabled false
+            html.enabled true
+        }
+    }
 }
 
 project(":server") {
     apply plugin: "java-library"
     apply plugin: "jacoco"
+    apply plugin: "findbugs"
 
     dependencies {
         api "com.badlogicgames.gdx:gdx-backend-lwjgl:$gdxVersion"
@@ -125,5 +141,18 @@ project(":server") {
 
         sourceSets sourceSets.main
     }
-}
 
+    findbugs {
+        ignoreFailures = true
+        toolVersion = "3.0.1"
+        sourceSets=[sourceSets.main]
+        reportsDir = file("$project.buildDir/reports/findbugs")
+        effort = "max"
+    }
+    tasks.withType(FindBugs) {
+        reports {
+            xml.enabled false
+            html.enabled true
+        }
+    }
+}
