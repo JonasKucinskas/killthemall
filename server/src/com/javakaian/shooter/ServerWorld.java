@@ -79,6 +79,7 @@ public class ServerWorld implements OMessageListener {
 	 */
 	public void spawnRandomEnemy() {
 
+		System.out.println("CustomFindBugsPlugin has been loaded successfully!");
 		if (enemyTime >= 0.4 && enemies.size() <= 15) {
 			enemyTime = 0;
 			if (enemies.size() % 5 == 0)
@@ -136,7 +137,7 @@ public class ServerWorld implements OMessageListener {
 			loginController.putUserIDBack(p.getId());
 		});
 		logger.debug("Logout Message recieved from : " + m.getId() + " Size: " + players.size());
-
+		
 	}
 
 	@Override
